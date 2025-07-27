@@ -19,45 +19,32 @@ backend/
 ├── app/                          # メインアプリケーション
 │   ├── api/                      # API エンドポイント
 │   │   ├── __init__.py
-│   │   ├── auth.py               # 認証関連エンドポイント
-│   │   ├── health.py             # ヘルスチェック
-│   │   └── v1/                   # API v1
-│   │       ├── __init__.py
-│   │       └── endpoints/        # 各機能のエンドポイント
-│   ├── core/                     # コア設定
-│   │   ├── __init__.py
-│   │   ├── config.py             # 環境設定
-│   │   ├── security.py           # セキュリティ設定
-│   │   └── logging.py            # ログ設定
-│   ├── models/                   # データモデル
-│   │   ├── __init__.py
-│   │   └── user.py               # ユーザーモデル
-│   ├── schemas/                  # Pydanticスキーマ
-│   │   ├── __init__.py
-│   │   ├── auth.py               # 認証スキーマ
-│   │   └── user.py               # ユーザースキーマ
-│   ├── services/                 # ビジネスロジック
-│   │   ├── __init__.py
-│   │   ├── auth_service.py       # 認証サービス
-│   │   └── supabase_service.py   # Supabase連携
-│   ├── utils/                    # ユーティリティ
-│   │   ├── __init__.py
-│   │   └── helpers.py            # ヘルパー関数
+│   │   └── hello.py              # Hello World API
+│   ├── core/                     # コア設定（予定）
+│   ├── models/                   # データモデル（予定）
+│   ├── schemas/                  # Pydanticスキーマ（予定）
+│   ├── services/                 # ビジネスロジック（予定）
+│   ├── utils/                    # ユーティリティ（予定）
 │   ├── __init__.py
 │   └── main.py                   # アプリケーションエントリーポイント
+├── scripts/                      # スクリプト
+│   └── generate-types.sh         # TypeScript型生成スクリプト
+├── src/                          # ソースコード（予定）
+│   └── ai_app_backend/
 ├── tests/                        # テストファイル
-│   ├── api/                      # API テスト
-│   ├── core/                     # コア機能テスト
-│   ├── models/                   # モデルテスト
-│   ├── schemas/                  # スキーマテスト
-│   ├── services/                 # サービステスト
-│   ├── utils/                    # ユーティリティテスト
-│   ├── conftest.py               # pytest設定
-│   └── fixtures/                 # テストフィクスチャ
-├── .env.example                  # 環境変数テンプレート
+│   ├── api/                      # API テスト（予定）
+│   ├── core/                     # コア機能テスト（予定）
+│   ├── models/                   # モデルテスト（予定）
+│   ├── schemas/                  # スキーマテスト（予定）
+│   ├── services/                 # サービステスト（予定）
+│   ├── utils/                    # ユーティリティテスト（予定）
+│   ├── __init__.py
+│   └── test_hello.py             # Hello API テスト
+├── .env.example                  # 環境変数テンプレート（予定）
 ├── .gitignore                    # Git除外設定
 ├── pyproject.toml                # プロジェクト設定
 ├── README.md                     # このファイル
+├── run_dev.py                    # 開発サーバー起動スクリプト
 └── .python-version               # Python バージョン
 ```
 
@@ -79,14 +66,17 @@ rye sync
 ### 2. 環境変数の設定
 
 ```bash
-cp .env.example .env
-# .envファイルを編集してSupabaseの設定を追加
+# .envファイルを作成してSupabaseの設定を追加（予定）
+# cp .env.example .env
 ```
 
 ### 3. 開発サーバーの起動
 
 ```bash
 # 開発サーバー（自動リロード）
+rye run python run_dev.py
+
+# または直接uvicornを使用
 rye run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 # 本番サーバー
@@ -98,6 +88,7 @@ rye run uvicorn app.main:app --host 0.0.0.0 --port 8000
 ## 📚 API ドキュメント
 
 - **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
 
 ## 🚀 Hello World API
 
@@ -130,15 +121,97 @@ curl http://localhost:8000/api/hello/YourName
 
 ```bash
 # 全テスト実行
-rye run pytest
+rye test
 
 # 特定のテスト実行
-rye run pytest tests/test_hello.py
+rye test tests/test_hello.py
 
 # カバレッジ付きテスト実行
-rye run pytest --cov=app
+rye test --cov=app
 ```
-- **ReDoc**: http://localhost:8000/redoc
+
+## 🔄 TypeScript型生成フロー
+
+FastAPIのOpenAPIスキーマからTypeScriptクライアントコードを自動生成するフローです。
+
+### 前提条件
+
+```bash
+# フロントエンドディレクトリでopenapi-typescript-codegenをインストール
+cd ../frontend
+npm install -g openapi-typescript-codegen
+```
+
+### 1. バックエンドサーバー起動
+
+```bash
+# バックエンドディレクトリでサーバーを起動
+cd backend
+rye run python run_dev.py
+```
+
+### 2. TypeScriptクライアントコードの生成
+
+```bash
+# 自動化スクリプトを使用
+cd backend
+./scripts/generate-types.sh
+```
+
+または手動で実行：
+
+```bash
+# OpenAPIスキーマを取得
+curl -s http://localhost:8000/openapi.json > openapi.json
+
+# TypeScriptクライアントを生成
+cd ../frontend
+openapi --input ../backend/openapi.json --output src/api-client --client fetch
+```
+
+### 3. 生成されるファイル構造
+
+```
+frontend/src/api-client/
+├── index.ts              # メインエクスポート
+├── core/                 # コア機能
+│   ├── ApiError.ts       # エラーハンドリング
+│   ├── CancelablePromise.ts # キャンセル可能なPromise
+│   ├── OpenAPI.ts        # 設定
+│   └── request.ts        # リクエスト処理
+├── models/               # 型定義
+│   ├── HTTPValidationError.ts
+│   └── ValidationError.ts
+└── services/             # APIサービス
+    ├── DefaultService.ts # 基本API（/, /health）
+    └── HelloService.ts   # Hello API
+```
+
+### 4. 使用例
+
+```typescript
+// APIクライアントの設定
+import { OpenAPI } from './api-client';
+OpenAPI.BASE = 'http://localhost:8000';
+
+// API呼び出し
+import { HelloService, DefaultService } from './api-client';
+
+// Hello World API
+const helloResponse = await HelloService.helloWorldApiHelloGet();
+
+// 名前付きHello API
+const namedHello = await HelloService.helloNameApiHelloNameGet('TestUser');
+
+// ヘルスチェック
+const health = await DefaultService.healthCheckHealthGet();
+```
+
+### 5. 注意事項
+
+- **型生成のタイミング**: APIエンドポイントを変更した後は必ず型生成を実行
+- **バージョン管理**: 生成されたファイルは`.gitignore`に追加することを推奨
+- **手動編集禁止**: 生成されたファイルは手動で編集しないでください
 
 ## 🧪 テスト
 
@@ -150,7 +223,7 @@ rye test
 rye test --cov=app --cov-report=html
 
 # 特定のテストファイル
-rye test tests/api/test_auth.py
+rye test tests/test_hello.py
 ```
 
 ## 🔧 開発ツール
@@ -174,26 +247,37 @@ rye fmt && rye lint && rye run mypy .
 
 ## 🏗️ アーキテクチャ
 
-### レイヤー構成
+### 現在の実装
 
 1. **API Layer** (`app/api/`)
    - FastAPI エンドポイント
-   - リクエスト/レスポンス処理
-   - バリデーション
+   - Hello World API実装
 
-2. **Service Layer** (`app/services/`)
+2. **Main Application** (`app/main.py`)
+   - FastAPI アプリケーション設定
+   - CORS設定
+   - ルーター登録
+
+### 今後の拡張予定
+
+1. **Service Layer** (`app/services/`)
    - ビジネスロジック
    - 外部サービス連携
    - データ処理
 
-3. **Model Layer** (`app/models/`)
+2. **Model Layer** (`app/models/`)
    - データモデル定義
    - Supabase連携
 
-4. **Schema Layer** (`app/schemas/`)
+3. **Schema Layer** (`app/schemas/`)
    - Pydanticスキーマ
    - データバリデーション
    - API ドキュメント生成
+
+4. **Core Layer** (`app/core/`)
+   - 設定管理
+   - セキュリティ設定
+   - ログ設定
 
 ### 設計原則
 
@@ -203,7 +287,7 @@ rye fmt && rye lint && rye run mypy .
 - **テスト容易性**: モック可能な設計
 - **スケーラビリティ**: モジュール化された構造
 
-## 🔐 Supabase設定
+## 🔐 Supabase設定（予定）
 
 ### 必要な環境変数
 
