@@ -2,6 +2,17 @@
 
 AI-powered rapid app generation template with React, TypeScript, Tailwind CSS, and FastAPI.
 
+## ✨ 新機能: 画像生成機能
+
+AIを活用した画像生成機能が追加されました！詳細は[画像生成機能の実装プロンプト](prompts/implementation/image-generation.md)を参照してください。
+
+### 主な機能
+- **Text-to-Image生成**: プロンプトから画像を生成
+- **スタイルプリセット**: アニメ、写真、デジタルアートなど15種類のスタイル
+- **サイズとアスペクト比の選択**: カスタマイズ可能な画像サイズ
+- **プロンプト最適化**: AIによるプロンプトの強化と提案
+- **画像ギャラリー**: 生成した画像の管理と表示
+
 ## 🚀 クイックスタート
 
 ### 環境構築の自動化

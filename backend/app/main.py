@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.hello import router as hello_router
+from app.api.image_routes import router as image_router
 
 app = FastAPI(
     title="AI App Backend",
@@ -19,6 +20,7 @@ app.add_middleware(
 
 # APIルーターの登録
 app.include_router(hello_router)
+app.include_router(image_router)
 
 @app.get("/")
 async def root():

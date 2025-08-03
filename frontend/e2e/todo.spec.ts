@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test.describe('Todo App', () => {
   test('should display the todo app', async ({ page }) => {
