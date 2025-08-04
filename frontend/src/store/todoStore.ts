@@ -17,7 +17,7 @@ let idCounter = 0
 
 export const useTodoStore = create<TodoState>((set) => ({
   todos: [],
-  addTodo: (text) => 
+  addTodo: (text) =>
     set((state) => ({
       todos: [
         ...state.todos,
@@ -31,7 +31,7 @@ export const useTodoStore = create<TodoState>((set) => ({
   toggleTodo: (id) =>
     set((state) => ({
       todos: state.todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
       ),
     })),
   deleteTodo: (id) =>
